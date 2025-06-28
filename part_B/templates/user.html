@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Submit Report</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #3498db;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .help-text {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        @media (max-width: 600px) {
+            body {
+                max-width: 100vw;
+                padding: 5vw;
+            }
+            .container {
+                padding: 10px;
+            }
+            button {
+                font-size: 15px;
+                padding: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Submit Your Information</h1>
+        
+        {% if error %}
+        <div class="flash">{{ error }}</div>
+        {% endif %}
+        
+        <form method="POST">
+            <div class="form-group">
+                <label for="name">Your Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="text" id="phone" name="phone" placeholder="e.g., +1234567890" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="coordinates">Location Coordinates:</label>
+                <input type="text" id="coordinates" name="coordinates" 
+                       placeholder="e.g., 12.922835,77.50111" required>
+                <p class="help-text">
+                    To get coordinates:
+                    <br>1. Open Google Maps
+                    <br>2. Right-click your location (long press on mobile)
+                    <br>3. Copy the numbers that appear (e.g., 12.922835,77.50111)
+                    <br>4. Paste them here, keeping the comma between numbers
+                </p>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" placeholder="Please describe your situation..." required></textarea>
+            </div>
+            
+            <button type="submit">Submit Report</button>
+        </form>
+    </div>
+</body>
+</html>

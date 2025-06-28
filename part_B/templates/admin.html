@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #e74c3c;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #e74c3c;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .logout-btn {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px; 
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+        .map-link {
+            color: #e74c3c;
+            text-decoration: none;
+        }
+        .map-link:hover {
+            text-decoration: underline;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+            font-size: 14px;
+        }
+        .solve-btn {
+            background-color: #27ae60;
+        }
+        .solve-btn:hover {
+            background-color: #219a52;
+        }
+        .solve-btn[disabled] {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        .delete-btn {
+            background-color: #e74c3c;
+        }
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+        .status-solved {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .status-pending {
+            color: #e67e22;
+            font-weight: bold;
+        }
+        @media (max-width: 700px) {
+            body {
+                max-width: 100vw;
+                padding: 5vw;
+            }
+            .container {
+                padding: 10px;
+            }
+            table, thead, tbody, th, td, tr {
+                display: block;
+                width: 100%;
+            }
+            th, td {
+                box-sizing: border-box;
+                padding: 10px 5px;
+            }
+            th {
+                background-color: #e74c3c;
+                color: white;
+            }
+            tr {
+                margin-bottom: 15px;
+                border-bottom: 2px solid #eee;
+            }
+            td {
+                border: none;
+                position: relative;
+                padding-left: 50%;
+            }
+            td:before {
+                position: absolute;
+                top: 10px;
+                left: 10px;
+                width: 45%;
+                white-space: nowrap;
+                font-weight: bold;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-actions">
+            <h1>Admin Panel</h1>
+            <a href="/logout" class="logout-btn">Logout</a>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Location</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in reports %}
+                <tr>
+                    <td>{{ report.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td>{{ report.name }}</td>
+                    <td>{{ report.phone }}</td>
+                    <td><a href="{{ report.maps_url }}" class="map-link" target="_blank">View on Map</a></td>
+                    <td>{{ report.description }}</td>
+                    <td class="{% if report.solved %}status-solved{% else %}status-pending{% endif %}">
+                        {{ 'Solved' if report.solved else 'Pending' }}
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <form method="POST" action="{{ url_for('admin_action') }}" style="display: inline;">
+                                <input type="hidden" name="report_id" value="{{ report.id }}">
+                                <input type="hidden" name="action" value="solve">
+                                <button type="submit" class="btn solve-btn" {% if report.solved %}disabled{% endif %}>
+                                    {% if report.solved %}Solved{% else %}Mark as Solved{% endif %}
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ url_for('admin_action') }}" style="display: inline;">
+                                <input type="hidden" name="report_id" value="{{ report.id }}">
+                                <input type="hidden" name="action" value="delete">
+                                <button type="submit" class="btn delete-btn" onclick="return confirm('Are you sure you want to delete this report?')">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
